@@ -11,7 +11,6 @@
 <body class="bg-gray-900 text-white">
     
     @include("layouts/navbar")
-    
 
     <section class="text-center py-20 px-6">
         <h1 class="text-5xl font-bold leading-tight">Organize Seus Projetos com Facilidade</h1>
