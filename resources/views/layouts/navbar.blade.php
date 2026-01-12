@@ -5,14 +5,12 @@
             <img src="{{ asset('images/Kanbanly_Logo.png') }}" alt="Logo" class="h-20">
         </a>
 
-        <!-- Links Centralizados -->
         <div class="hidden md:flex flex-1 justify-center space-x-6">
             <a href="#" class="hover:text-indigo-400 transition">Sobre</a>
             <a href="#" class="hover:text-indigo-400 transition">Recursos</a>
             <a href="#" class="hover:text-indigo-400 transition">Contato</a>
         </div>
 
-        <!-- Área de Autenticação -->
         <div class="flex-none">
             @auth
                 <div class="relative group">
@@ -36,4 +34,3 @@
         </div>
     </div>
 </nav>
-

@@ -1,88 +1,68 @@
-# Kanbanly
+# KANBANLY - Sistema de Gestão de Projetos
 
-Kanbanly é uma aplicação web para gerenciamento de projetos e tarefas utilizando o método Kanban. Permite organizar tarefas, equipes e acompanhar o progresso dos projetos de forma visual e intuitiva.
+Este é um projeto de aplicação web para gestão de projetos, desenvolvido com Laravel. O sistema visa oferecer uma interface intuitiva para organizar tarefas e projetos de forma eficiente, inspirado em metodologias como Kanban.
 
-## Funcionalidades
+## Status do Projeto
 
-- Cadastro e autenticação de usuários
-- Criação e gerenciamento de quadros Kanban
-- Organização de tarefas em colunas (A Fazer, Em Progresso, Concluído)
-- Interface responsiva e moderna
-- Gerenciamento de perfil de usuário
+**Atenção:** O que está implementado atualmente é apenas uma demonstração inicial da estrutura final do projeto. Não é uma versão completa ou funcional. Serve para ilustrar como o sistema será organizado, incluindo configurações básicas de banco de dados e ambiente de desenvolvimento.
 
 ## Tecnologias Utilizadas
 
-- PHP 8.x
-- Laravel 10.x
-- PostgreSQL
-- Tailwind CSS
-- Vite
+- **Laravel**: Framework PHP para o backend.
+- **PostgreSQL**: Banco de dados relacional.
+- **pgAdmin**: Ferramenta para gerenciamento do banco de dados.
+- **Tailwind CSS**: Framework CSS para estilização.
+- **Redis**: Para cache e sessões (configurado no ambiente local).
 
 ## Pré-requisitos
 
-- PHP >= 8.1
+- PHP 8.x ou superior
 - Composer
-- PostgreSQL
-- Node.js e npm
+- PostgreSQL instalado e rodando
+- Node.js e npm (para assets frontend)
 
-## Instalação
+## Instalação e Configuração
 
-1. **Clone o repositório:**
-   ```bash
-   git clone https://github.com/Magrelaio/kanbanly
-   cd kanbanly
+1. Clone ou baixe o projeto para o diretório desejado.
+2. Instale as dependências do PHP com Composer:
    ```
-
-2. **Instale as dependências do PHP:**
-   ```bash
    composer install
    ```
-
-3. **Instale as dependências do Node.js:**
-   ```bash
-   npm install
+3. Copie o arquivo `.env.example` para `.env` e configure as variáveis de ambiente, especialmente as de banco de dados (PostgreSQL).
+4. Gere a chave da aplicação:
    ```
-
-4. **Copie o arquivo de ambiente e configure:**
-   ```bash
-   cp .env.example .env
-   ```
-   Edite o arquivo `.env` e configure as variáveis de conexão com o banco de dados PostgreSQL:
-   ```
-   DB_CONNECTION=pgsql
-   DB_HOST=127.0.0.1
-   DB_PORT=5432
-   DB_DATABASE=kanbanly
-   DB_USERNAME=postgres
-   DB_PASSWORD=sua_senha
-   ```
-
-5. **Gere a chave da aplicação:**
-   ```bash
    php artisan key:generate
    ```
-
-6. **Execute as migrations:**
-   ```bash
+5. Execute as migrações para criar as tabelas no banco:
+   ```
    php artisan migrate
    ```
-
-7. **Compile os assets:**
-   ```bash
-   npm run dev
+6. Inicie o servidor de desenvolvimento:
    ```
-
-8. **Inicie o servidor:**
-   ```bash
    php artisan serve
    ```
-   Acesse [http://localhost:8000](http://localhost:8000) no navegador.
 
-## Observações
+## Como Iniciar o Servidor PostgreSQL
 
-- Certifique-se de que o PostgreSQL está rodando e o banco de dados foi criado.
-- Para customizar o visual, edite os arquivos em `resources/views` e `resources/css`.
+Para iniciar o servidor PostgreSQL no Windows:
+
+1. Abra o Prompt de Comando como administrador.
+2. Navegue até o diretório bin do PostgreSQL (exemplo: `cd "C:\Program Files\PostgreSQL\14\bin"`).
+3. Execute o comando para iniciar o servidor:
+   ```
+   pg_ctl -D "C:\Program Files\PostgreSQL\14\data" start
+   ```
+   Substitua `14` pela versão instalada.
+
+Verifique o status com:
+```
+pg_ctl -D "C:\Program Files\PostgreSQL\14\data" status
+```
+
+## Contribuição
+
+Este projeto está em fase inicial. Contribuições são bem-vindas, mas foque em melhorias estruturais para a versão final.
 
 ## Licença
 
-Este projeto está sob a licença MIT.
+Este projeto é de uso pessoal/educacional. Consulte a documentação do Laravel para detalhes sobre licenciamento.
