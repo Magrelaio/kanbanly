@@ -13,15 +13,15 @@
 
         <div class="flex-none">
             @auth
-                <div class="relative group">
-                    <button class="px-4 py-2 bg-indigo-500 rounded-lg hover:bg-indigo-600 transition">
+                <div class="relative">
+                    <button class="px-4 py-2 bg-indigo-500 rounded-lg hover:bg-indigo-600 transition delay-200">
                         {{ Auth::user()->name }}
                     </button>
-                    <div class="absolute right-0 mt-2 w-48 bg-gray-700 rounded-lg shadow-lg hidden group-hover:block">
-                        <a href="{{ route('profile.edit') }}" class="block px-4 py-2 text-white hover:bg-gray-600">Perfil</a>
+                    <div id="profile-dropdown-menu" class="absolute right-0 mt-2 w-48 bg-gray-700 rounded-lg shadow-lg hidden">
+                        <a href="{{ route('profile.edit') }}" class="block px-4 py-2 text-white hover:bg-gray-600 rounded-lg">Perfil</a>
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
-                            <button type="submit" class="block w-full text-left px-4 py-2 text-white hover:bg-gray-600">
+                            <button type="submit" class="block w-full text-left px-4 py-2 text-white hover:bg-gray-600 rounded-lg">
                                 Sair
                             </button>
                         </form>
@@ -34,3 +34,27 @@
         </div>
     </div>
 </nav>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const dropdown = document.getElementById('profile-dropdown-menu');
+    const button = dropdown.previousElementSibling;
+    let timeout;
+
+    function showDropdown() {
+        clearTimeout(timeout);
+        dropdown.classList.remove('hidden');
+    }
+
+    function hideDropdown() {
+        timeout = setTimeout(() => {
+            dropdown.classList.add('hidden');
+        }, 800);
+    }
+
+    button.addEventListener('mouseenter', showDropdown);
+    button.addEventListener('mouseleave', hideDropdown);
+    dropdown.addEventListener('mouseenter', showDropdown);
+    dropdown.addEventListener('mouseleave', hideDropdown);
+});
+</script>

@@ -4,8 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kanbanly - Gerencie Seus Projetos</title>
-    @vite('resources/css/app.css')
-    @vite('resources/js/app.js')
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-900 text-white">
@@ -24,14 +23,17 @@
         <div class="bg-gray-800 p-6 rounded-lg shadow-md text-center">
             <h3 class="text-xl font-semibold text-indigo-400">Gerenciamento Ágil</h3>
             <p class="mt-2 text-gray-300">Organize tarefas e melhore a produtividade da sua equipe.</p>
+            <img src="{{ asset('images/placeholder-image.png') }}" alt="Placeholder" class="mx-auto mt-4">
         </div>
         <div class="bg-gray-800 p-6 rounded-lg shadow-md text-center">
             <h3 class="text-xl font-semibold text-indigo-400">Integrações Simples</h3>
             <p class="mt-2 text-gray-300">Conecte-se com Slack, Google Drive e muito mais.</p>
+            <img src="{{ asset('images/placeholder-image.png') }}" alt="Placeholder" class="mx-auto mt-4">
         </div>
         <div class="bg-gray-800 p-6 rounded-lg shadow-md text-center">
             <h3 class="text-xl font-semibold text-indigo-400">Colaboração em Tempo Real</h3>
             <p class="mt-2 text-gray-300">Trabalhe em equipe com atualizações instantâneas.</p>
+            <img src="{{ asset('images/placeholder-image.png') }}" alt="Placeholder" class="mx-auto mt-4">
         </div>
     </section>
 
@@ -39,5 +41,5 @@
         <p class="text-gray-400">© 2025 Kanbanly. Todos os direitos reservados.</p>
     </footer>
 
-</body>
+</body> 
 </html>
