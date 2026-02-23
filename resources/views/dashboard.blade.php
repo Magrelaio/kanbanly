@@ -1,5 +1,5 @@
 <x-app-layout>
-    <div class="flex h-screen" x-data="dashboard()" x-init="init()">
+    <div class="flex h-screen" x-data="dashboard(@js($currentBoard->columns), {{ $currentBoard->id }})" x-init="init()">
         <aside class="w-64 bg-white p-4 shadow-md flex flex-col">
             <div class="flex justify-between items-center">
                 <h2 class="text-xl font-bold">Kanbanly</h2>
@@ -254,27 +254,104 @@
 </div>
 
     <script>
-        function dashboard() {
+        function dashboard(columnsFromServer, boardId) {
             return {
+                columns: columnsFromServer,
+                currentBoardId: boardId,
+
                 showTaskModal: false,
                 showCreateBoard: false,
                 editingTask: null,
                 currentColumnId: null,
                 draggedTask: null,
                 searchQuery: '',
-                
+                pollingTimer: null,
+                pollingActive: false,
+
                 taskForm: {
                     title: '',
                     description: '',
                     due_date: '',
                     labels: []
                 },
+
                 newBoard: {
                     title: '',
                     color: 'blue'
                 },
+
                 init() {
-                    this.setupDragAndDrop();
+                    console.log('Columns carregadas:', this.columns);
+                    console.log('Dashboard init: currentBoardId=', this.currentBoardId);
+                    this.startPolling();
+
+                    document.addEventListener('visibilitychange', () => {
+                        if (document.hidden) {
+                            this.stopPolling();
+                        } else {
+                            this.startPolling();
+                        }
+                    });
+
+                    window.addEventListener('beforeunload', () => this.stopPolling());
+                },
+
+                startPolling() {
+                    if (this.pollingActive) return;
+                    console.log('startPolling() called');
+                    this.pollingActive = true;
+                    this.scheduleNextPoll(0);
+                },
+
+                stopPolling() {
+                    console.log('stopPolling() called');
+                    this.pollingActive = false;
+                    if (this.pollingTimer) {
+                        clearTimeout(this.pollingTimer);
+                        this.pollingTimer = null;
+                    }
+                },
+
+                scheduleNextPoll(delay = 10000) {
+                    if (!this.pollingActive) return;
+                    if (this.pollingTimer) clearTimeout(this.pollingTimer);
+                    console.log('scheduleNextPoll delay=', delay);
+                    this.pollingTimer = setTimeout(async () => {
+                        try {
+                            await this.checkForUpdates();
+                        } catch (e) {
+                            console.error('scheduleNextPoll: checkForUpdates threw', e);
+                        }
+                        if (this.pollingActive) this.scheduleNextPoll();
+                    }, delay);
+                },
+
+                async checkForUpdates() {
+                    console.log('checkForUpdates(): fetching /boards/' + this.currentBoardId + '/tasks');
+                    try {
+                        const response = await fetch(`/boards/${this.currentBoardId}/tasks`, { credentials: 'same-origin' });
+                        if (!response.ok) {
+                            console.warn('checkForUpdates: non-ok response', response.status, response.statusText);
+                            return;
+                        }
+
+                        const data = await response.json();
+
+                        if (!data || !Array.isArray(data.columns)) {
+                            console.warn('checkForUpdates: unexpected payload', data);
+                            return;
+                        }
+
+                        data.columns.forEach(column => {
+                            const columnRef = this.$refs['column' + column.id];
+                            if (columnRef && columnRef.__x) {
+                                columnRef.__x.$data.tasks = column.tasks;
+                            }
+                        });
+                        console.log('checkForUpdates: updated columns from server');
+                    } catch (error) {
+                        console.error('Erro ao buscar atualizações:', error);
+                    }
                 },
                 
                 // Drag and Drop
@@ -474,6 +551,11 @@
                         .then(tasks => {
                             console.log(tasks);
                         });
+                },
+
+                handleDrop(e) {
+                    e.preventDefault();
+                    this.draggedTask = null;
                 },
                 
                 editBoard(board) {

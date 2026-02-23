@@ -11,7 +11,7 @@ class BoardController extends Controller
     public function index()
     {
         $user = Auth::user();
-        $boards = $user->boards()->with('columns.tasks')->get();
+        $boards = Board::where('user_id', $user->id)->with('columns.tasks')->get();
         
         return response()->json($boards);
     }
@@ -25,7 +25,8 @@ class BoardController extends Controller
 
         $user = Auth::user();
         
-        $board = $user->boards()->create([
+        $board = Board::create([
+            'user_id' => $user->id,
             'title' => $validated['title'],
             'color' => $validated['color'] ?? 'blue'
         ]);
@@ -50,7 +51,7 @@ class BoardController extends Controller
     {
         $user = Auth::user();
         
-        if (!$user->canViewBoard($board)) {
+        if ($board->user_id !== $user->id) {
             abort(403, 'Você não tem permissão para ver este board.');
         }
 
@@ -65,7 +66,7 @@ class BoardController extends Controller
     {
         $user = Auth::user();
 
-        if (!$user->ownsBoard($board)) {
+        if ($board->user_id !== $user->id) {
             abort(403, 'Apenas o dono do board pode editá-lo.');
         }
         
@@ -90,7 +91,7 @@ class BoardController extends Controller
     {
         $user = Auth::user();
         
-        if (!$user->ownsBoard($board)) {
+        if ($board->user_id !== $user->id) {
             abort(403, 'Apenas o dono do board pode excluí-lo.');
         }
         
@@ -109,11 +110,12 @@ class BoardController extends Controller
     {
         $user = Auth::user();
         
-        if (!$user->canViewBoard($board)) {
+        if ($board->user_id !== $user->id) {
             abort(403);
         }
 
-        $newBoard = $user->boards()->create([
+        $newBoard = Board::create([
+            'user_id' => $user->id,
             'title' => $board->title . ' (cópia)',
             'color' => $board->color
         ]);
@@ -140,4 +142,23 @@ class BoardController extends Controller
             'board' => $newBoard->load('columns.tasks')
         ]);
     }
+    public function getTasks(Board $board)
+{
+    $user = Auth::user();
+    
+    if ($board->user_id !== $user->id) {
+        return response()->json(['error' => 'Não autorizado'], 403);
+    }
+    
+    $board->load(['columns' => function($query) {
+        $query->with(['tasks' => function($q) {
+            $q->with('user')->orderBy('order');
+        }])->orderBy('order');
+    }]);
+    
+    return response()->json([
+        'success' => true,
+        'columns' => $board->columns
+    ]);
+}
 }

@@ -10,7 +10,8 @@ class DashboardController extends Controller
 {
     public function index(Request $request)
     {
-        $boards = Auth::user()->boards()->with('columns.tasks.user')->get();
+        $user = Auth::user();
+        $boards = $user->boards ?? collect([]);
         
         if ($boards->isEmpty()) {
             $board = $this->createDefaultBoard();
@@ -29,7 +30,9 @@ class DashboardController extends Controller
 
     private function createDefaultBoard()
     {
-        $board = Auth::user()->boards()->create([
+        $user = Auth::user();
+        $board = Board::create([
+            'user_id' => $user->id,
             'title' => 'Meu Primeiro Board',
             'color' => 'blue'
         ]);
